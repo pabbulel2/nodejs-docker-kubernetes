@@ -1,0 +1,61 @@
+# Docker
+# Build a Docker image
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  jobs:
+  - job: BuildDockerImage
+    displayName: Build Docker Image
+    steps:
+    - task: Docker@2
+      inputs:
+        repository: '$(DOCKER_REPOSITORY_NAME)'
+        command: 'build'
+        Dockerfile: '**/Dockerfile'
+        buildContext: '$(Build.SourcesDirectory)'
+
+    - task: ECRPushImage@1
+      inputs:
+        awsCredentials: 'AWS_ECR_Access'
+        regionName: '$(AWS_REGION)'
+        imageSource: 'imagename'
+        sourceImageName: '$(DOCKER_REPOSITORY_NAME)'
+        sourceImageTag: '$(Build.BuildId)'
+        repositoryName: '$(DOCKER_REPOSITORY_NAME)'
+        pushTag: '$(Build.BuildId)'
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: 'kubernetes'
+        Contents: '**'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
+    - task: KubernetesManifest@0
+      displayName: Deploy
+      inputs:
+        kubernetesServiceConnection: eks-connection
+        namespace: default
+        manifests: |
+          deployment.yml
+    # - task: HelmDeploy@0
+    #   inputs:
+    #     connectionType: 'Kubernetes Service Connection'
+    #     kubernetesServiceConnection: 'eks-connection'
+    #     namespace: 'default'
+    #     command: 'install'
+    #     chartPath: ./Helm_Zed_app
+    #     chartType: FilePath
+    #     install: true
+    #     chartName: 'Zedapp'
+    #     chartVersion: '1.0'
+        
