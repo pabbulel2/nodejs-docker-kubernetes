@@ -21,7 +21,7 @@ stages:
          command: 'build'
          Dockerfile: '**/Dockerfile'
          buildContext: '$(Build.SourcesDirectory)'
-      - task: ECRPushImage@1
+     - task: ECRPushImage@1
         inputs:
           awsCredentials: 'ad-aws-lp'
           regionName: 'me-central-1'
