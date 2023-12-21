@@ -21,6 +21,12 @@ stages:
          command: 'build'
          Dockerfile: '**/Dockerfile'
          buildContext: '$(Build.SourcesDirectory)'
+      - task: ECRPushImage@1
+        inputs:
+          awsCredentials: 'ad-aws-lp'
+          regionName: 'me-central-1'
+          imageSource: 'imagename'
+          repositoryName: 'dev-repo'
 
     # - task: ECRPushImage@1
     #   inputs:
@@ -32,14 +38,7 @@ stages:
     #     repositoryName: '$(DOCKER_REPOSITORY_NAME)'
     #     pushTag: '$(Build.BuildId)'
     
-    - task: ECRPushImage@1
-  inputs:
-    awsCredentials: 'ad-aws-lp'
-    regionName: 'me-central-1'
-    imageSource: 'imagename'
-    sourceImageName: 'dev-repo'
-    repositoryName: 'dev-repo'
-
+  
     - task: CopyFiles@2
       inputs:
         SourceFolder: 'kubernetes'
