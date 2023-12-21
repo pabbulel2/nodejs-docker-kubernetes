@@ -1,4 +1,5 @@
 # Docker
+
 # Build a Docker image
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
@@ -14,22 +15,31 @@ stages:
   - job: BuildDockerImage
     displayName: Build Docker Image
     steps:
-    - task: Docker@2
-      inputs:
-        repository: '$(DOCKER_REPOSITORY_NAME)'
-        command: 'build'
-        Dockerfile: '**/Dockerfile'
-        buildContext: '$(Build.SourcesDirectory)'
+    # - task: Docker@2
+    #   inputs:
+    #     repository: '$(DOCKER_REPOSITORY_NAME)'
+    #     command: 'build'
+    #     Dockerfile: '**/Dockerfile'
+    #     buildContext: '$(Build.SourcesDirectory)'
 
+    # - task: ECRPushImage@1
+    #   inputs:
+    #     awsCredentials: 'ad-aws-lp'
+    #     regionName: '$(AWS_REGION)'
+    #     imageSource: 'imagename'
+    #     sourceImageName: '$(DOCKER_REPOSITORY_NAME)'
+    #     sourceImageTag: '$(Build.BuildId)'
+    #     repositoryName: '$(DOCKER_REPOSITORY_NAME)'
+    #     pushTag: '$(Build.BuildId)'
+    
     - task: ECRPushImage@1
-      inputs:
-        awsCredentials: 'ad-aws-lp'
-        regionName: '$(AWS_REGION)'
-        imageSource: 'imagename'
-        sourceImageName: '$(DOCKER_REPOSITORY_NAME)'
-        sourceImageTag: '$(Build.BuildId)'
-        repositoryName: '$(DOCKER_REPOSITORY_NAME)'
-        pushTag: '$(Build.BuildId)'
+  inputs:
+    awsCredentials: 'ad-aws-lp'
+    regionName: 'me-central-1'
+    imageSource: 'imagename'
+    sourceImageName: 'dev-repo'
+    repositoryName: 'dev-repo'
+
     - task: CopyFiles@2
       inputs:
         SourceFolder: 'kubernetes'
