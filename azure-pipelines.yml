@@ -15,12 +15,12 @@ stages:
   - job: BuildDockerImage
     displayName: Build Docker Image
   steps:
-    # - task: Docker@2
-    #   inputs:
-    #     repository: '$(DOCKER_REPOSITORY_NAME)'
-    #     command: 'build'
-    #     Dockerfile: '**/Dockerfile'
-    #     buildContext: '$(Build.SourcesDirectory)'
+     - task: Docker@2
+       inputs:
+         repository: '$(DOCKER_REPOSITORY_NAME)'
+         command: 'build'
+         Dockerfile: '**/Dockerfile'
+         buildContext: '$(Build.SourcesDirectory)'
 
     # - task: ECRPushImage@1
     #   inputs:
