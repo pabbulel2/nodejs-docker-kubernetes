@@ -14,7 +14,7 @@ stages:
   jobs:
   - job: BuildDockerImage
     displayName: Build Docker Image
-    steps:
+  steps:
     # - task: Docker@2
     #   inputs:
     #     repository: '$(DOCKER_REPOSITORY_NAME)'
