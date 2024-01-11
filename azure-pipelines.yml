@@ -14,24 +14,38 @@ stages:
   jobs:
   - job: BuildDockerImage
     displayName: Build Docker Image
-  steps:
-     - task: Docker@2
-       inputs:
-         repository: '$(DOCKER_REPOSITORY_NAME)'
-         command: 'build'
-         Dockerfile: '**/Dockerfile'
-         buildContext: '$(Build.SourcesDirectory)'
-
-     - task: ECRPushImage@1
-       inputs:
-        awsCredentials: 'ad-aws-lp'
-        regionName: $(AWS_REGION)
-        imageSource: 'imagename'
-        sourceImageName: $(DOCKER_REPOSITORY_NAME)
-        sourceImageTag: $(Build.BuildId)
-        pushTag: latest
-        repositoryName: $(DOCKER_REPOSITORY_NAME)
+    steps:
+    - script: |
+       sudo apt-get install -y awscli
+      #  aws configure set aws_access_key_id $(AWS_ACCESS_KEY_ID)
+      #  aws configure set aws_secret_access_key $(AWS_SECRET_ACCESS_KEY)
+      #  aws configure set region $(AWS_REGION)
+      #  aws s3 ls
+      displayName: 'Install and Configure AWS CLI'
     
+    - script: |
+       export AWS_SDK_LOAD_CONFIG=1
+      displayName: 'Set AWS_SDK_LOAD_CONFIG'
+
+    - task: Npm@1
+      inputs:
+       command: 'install'
+    - task: Docker@2
+      inputs:
+        repository: '$(DOCKER_REPOSITORY_NAME)'
+        command: 'build'
+        Dockerfile: '**/Dockerfile'
+        buildContext: '$(Build.SourcesDirectory)'
+
+    - task: ECRPushImage@1
+      inputs:
+        awsCredentials: 'AWS_ECR_Access'
+        regionName: '$(AWS_REGION)'
+        imageSource: 'imagename'
+        sourceImageName: '$(DOCKER_REPOSITORY_NAME)'
+        sourceImageTag: '$(Build.BuildId)'
+        repositoryName: '$(DOCKER_REPOSITORY_NAME)'
+        pushTag: '$(Build.BuildId)'
   
     # - task: CopyFiles@2
     #   inputs:
