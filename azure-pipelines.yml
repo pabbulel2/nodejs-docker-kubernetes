@@ -9,11 +9,12 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- task: UseDotNet@2
-  displayName: 'Use Node.js'
+
+- task: NodeTool@0
   inputs:
-    packageType: 'node'
-    version: 'lts-alpine'
+    versionSpec: '14.x'
+    checkLatest: true
+    addToPath: true'
 
 - script: |
     npm install
