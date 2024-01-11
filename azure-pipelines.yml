@@ -23,7 +23,7 @@ stages:
          buildContext: '$(Build.SourcesDirectory)'
 
      - task: ECRPushImage@1
-      inputs:
+       inputs:
         awsCredentials: 'ad-aws-lp'
         regionName: $(AWS_REGION)
         imageSource: 'imagename'
