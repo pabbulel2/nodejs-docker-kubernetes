@@ -13,7 +13,7 @@ steps:
   displayName: 'Use Node.js'
   inputs:
     packageType: 'node'
-    version: '14.x'
+    version: 'lts-alpine'
 
 - script: |
     npm install
