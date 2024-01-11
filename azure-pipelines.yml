@@ -21,18 +21,16 @@ stages:
          command: 'build'
          Dockerfile: '**/Dockerfile'
          buildContext: '$(Build.SourcesDirectory)'
-    
-    
 
     - task: ECRPushImage@1
       inputs:
         awsCredentials: 'ECR_ACCES'
-        regionName: '$(AWS_REGION)'
+        regionName: $(AWS_REGION)
         imageSource: 'imagename'
-        sourceImageName: '$(DOCKER_REPOSITORY_NAME)'
-        sourceImageTag: '$(Build.BuildId)'
-        repositoryName: '$(DOCKER_REPOSITORY_NAME)'
-        pushTag: '$(Build.BuildId)'
+        sourceImageName: $(DOCKER_REPOSITORY_NAME)
+        sourceImageTag: $(Build.BuildId)
+        pushTag: latest
+        repositoryName: $(DOCKER_REPOSITORY_NAME)
     
   
     # - task: CopyFiles@2
