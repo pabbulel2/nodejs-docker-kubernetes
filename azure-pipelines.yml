@@ -24,34 +24,34 @@ stages:
     
     
 
-    # - task: ECRPushImage@1
-    #   inputs:
-    #     awsCredentials: 'ad-aws-lp'
-    #     regionName: '$(AWS_REGION)'
-    #     imageSource: 'imagename'
-    #     sourceImageName: '$(DOCKER_REPOSITORY_NAME)'
-    #     sourceImageTag: '$(Build.BuildId)'
-    #     repositoryName: '$(DOCKER_REPOSITORY_NAME)'
-    #     pushTag: '$(Build.BuildId)'
+    - task: ECRPushImage@1
+      inputs:
+        awsCredentials: 'ECR_ACCES'
+        regionName: '$(AWS_REGION)'
+        imageSource: 'imagename'
+        sourceImageName: '$(DOCKER_REPOSITORY_NAME)'
+        sourceImageTag: '$(Build.BuildId)'
+        repositoryName: '$(DOCKER_REPOSITORY_NAME)'
+        pushTag: '$(Build.BuildId)'
     
   
-    - task: CopyFiles@2
-      inputs:
-        SourceFolder: 'kubernetes'
-        Contents: '**'
-        TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    - task: PublishBuildArtifacts@1
-      inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        ArtifactName: 'drop'
-        publishLocation: 'Container'
-    - task: KubernetesManifest@0
-      displayName: Deploy
-      inputs:
-        kubernetesServiceConnection: eks-connection
-        namespace: default
-        manifests: |
-          deployment.yml
+    # - task: CopyFiles@2
+    #   inputs:
+    #     SourceFolder: 'kubernetes'
+    #     Contents: '**'
+    #     TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    # - task: PublishBuildArtifacts@1
+    #   inputs:
+    #     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    #     ArtifactName: 'drop'
+    #     publishLocation: 'Container'
+    # - task: KubernetesManifest@0
+    #   displayName: Deploy
+    #   inputs:
+    #     kubernetesServiceConnection: eks-connection
+    #     namespace: default
+    #     manifests: |
+    #       deployment.yml
     # - task: HelmDeploy@0
     #   inputs:
     #     connectionType: 'Kubernetes Service Connection'
